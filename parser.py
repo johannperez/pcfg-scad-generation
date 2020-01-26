@@ -1,4 +1,5 @@
-from cfg import grammar
+# from cfg import grammar
+from pcfg import pgrammar, GenerateRandomSample
 from nltk.parse import ShiftReduceParser, RecursiveDescentParser
 from nltk.tree import Tree, ParentedTree
 import openpyscad as ops
@@ -75,13 +76,19 @@ def GenerateCadFile(tree: ParentedTree):
 
 
 def Process(str, file):
-    sr = RecursiveDescentParser(grammar)
+    sr = RecursiveDescentParser(pgrammar)
     r = list(sr.parse(str.split()))
-    cadResult = GenerateCadFile(ParentedTree.convert(r[0]))
-    cadResult.write(file)
+    if len(r) > 0:
+        cadResult = GenerateCadFile(ParentedTree.convert(r[0]))
+        cadResult.write(file)
+    else:
+        print("************* " + str)
 
 Process('circle', 'output1.scad')
 Process('overlap [ circle square ]', 'output2.scad')
 Process('concat [ circle square ]', 'output3.scad')
 Process('concat [ circle circle circle circle ]', 'output4.scad')
 Process('concat [ circle square circle square ]', 'output5.scad')
+
+for i in range(1,50):
+     Process(GenerateRandomSample(pgrammar), './out/output' + str(i) + '.scad')

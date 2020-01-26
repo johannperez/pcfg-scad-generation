@@ -24,6 +24,8 @@ def generate_sample(grammar, prod, frags):
     elif prod in grammar._rhs_index:
         # terminal
         frags.append(str(prod))
+    else:
+        frags.append(prod)
 
 def weighted_choice(productions):
     prods_with_probs = [(prod, prod.prob()) for prod in productions]
