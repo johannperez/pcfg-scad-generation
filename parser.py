@@ -2,13 +2,27 @@
 from pcfg import pgrammar, GenerateRandomSample
 from nltk.parse import ShiftReduceParser, RecursiveDescentParser
 from nltk.tree import Tree, ParentedTree
+from copy import deepcopy
 import openpyscad as ops
+import random
 
 def IsTerminal(tree):
     return type(tree) == str
 
 def IsOverlapped(tree):
     return tree.label() == 'Overlapped'
+
+def IsMirrored(tree):
+    return tree.label() == 'Mirror'    
+
+def IsHull(tree):
+    return tree.label() == 'Hull'
+
+def IsExtruded(tree):
+    return tree.label() == 'Extrude'    
+
+def IsIntersected(tree):
+    return tree.label() == 'Intersected'    
 
 def GenerateOverlappedTreeCadModel(tree:ParentedTree):
     element = ops.Union()
@@ -17,6 +31,31 @@ def GenerateOverlappedTreeCadModel(tree:ParentedTree):
         if cadFigure != None:
             element.append(cadFigure)
     return element
+
+def GenerateIntersectedCadModel(tree:ParentedTree):
+    element = ops.Intersection()
+    for i in range(0, len(tree)):
+        cadFigure = GenerateCadFile(tree[i])
+        if cadFigure != None:
+            element.append(cadFigure)
+    return element
+
+def GenerateMirroredCadModel(tree:ParentedTree):
+    cadFigure = GenerateCadFile(tree[2])
+    cadFigure2 = deepcopy(cadFigure)
+    cadFigure = cadFigure.mirror([1,0,0])
+    result = ops.Union()
+    result.append(cadFigure)
+    result.append(cadFigure2)
+    return result
+
+def GenerateExtrudedCadModel(tree:ParentedTree):
+    cadFigure = GenerateCadFile(tree[2])
+    return cadFigure.linear_extrude(height=10, twist=120)
+
+def GenerateHullCadModel(tree:ParentedTree):
+    cadFigure = GenerateCadFile(tree[2])
+    return cadFigure.hull()
 
 def IsConcatenated(tree:ParentedTree):
     return tree.label() == 'Concatenated'
@@ -32,11 +71,15 @@ def GenerateConcatenatedCadModel(tree:ParentedTree):
                 offset = offset + 10
     return element
 
+def GenerateSphere():
+    return ops.Sphere(5).translate([(random.random()-0.5)*10, (random.random()-0.5)*10, (random.random()-0.5)*10])
+
 def GenerateCircleModel():
-    primitive = ops.Difference()
-    primitive.append(ops.Circle(6))
-    primitive.append(ops.Circle(5))
-    return primitive
+    return ops.Cylinder(2)
+    # primitive = ops.Difference()
+    # primitive.append(ops.Circle(6))
+    # primitive.append(ops.Circle(5))
+    # return primitive
 
 def GenerateSquareModel():
     primitive = ops.Difference()
@@ -66,12 +109,22 @@ def GenerateCadFile(tree: ParentedTree):
             return GenerateConcatenatedCadModel(tree)
         elif IsAnArray(tree):
             return GenerateArrayModel(tree)                 
+        elif IsMirrored(tree):
+            return GenerateMirroredCadModel(tree)
+        elif IsExtruded(tree):
+            return GenerateExtrudedCadModel(tree)
+        elif IsIntersected(tree):
+            return GenerateIntersectedCadModel(tree)
+        elif IsHull(tree):
+            return GenerateHullCadModel(tree)
         else:
             return GenerateCadFile(tree[0])
     elif tree == 'circle':
         return GenerateCircleModel().translate([6,4,0])
     elif tree == 'square':
         return GenerateSquareModel()
+    elif tree == 'sphere':
+        return GenerateSphere()
 
 
 
@@ -84,11 +137,7 @@ def Process(str, file):
     else:
         print("************* " + str)
 
-Process('circle', 'output1.scad')
-Process('overlap [ circle square ]', 'output2.scad')
-Process('concat [ circle square ]', 'output3.scad')
-Process('concat [ circle circle circle circle ]', 'output4.scad')
-Process('concat [ circle square circle square ]', 'output5.scad')
+Process('extrude [ mirror [ concat [ circle square circle square ] ] ]', 'output5.scad')
 
 for i in range(1,50):
-     Process(GenerateRandomSample(pgrammar), './out/output' + str(i) + '.scad')
+    Process(GenerateRandomSample(pgrammar), './out/output' + str(i) + '.scad')
