@@ -4,7 +4,9 @@ linear_extrude(height=10, twist=120){
             union(){
                 translate(v=[0, 0, 0]){
                     translate(v=[6, 4, 0]){
-                        cylinder(h=2);
+                        translate(v=[0.5858197940568532, -4.767126042723606, 3.1340820126468216]){
+                            cylinder(h=4);
+                        };
                     };
                 };
                 translate(v=[10, 0, 0]){
@@ -17,7 +19,9 @@ linear_extrude(height=10, twist=120){
                 };
                 translate(v=[20, 0, 0]){
                     translate(v=[6, 4, 0]){
-                        cylinder(h=2);
+                        translate(v=[0.6085016237992458, 0.1995345709544849, 0.08586775879288466]){
+                            cylinder(h=4);
+                        };
                     };
                 };
                 translate(v=[30, 0, 0]){
@@ -33,7 +37,9 @@ linear_extrude(height=10, twist=120){
         union(){
             translate(v=[0, 0, 0]){
                 translate(v=[6, 4, 0]){
-                    cylinder(h=2);
+                    translate(v=[0.5858197940568532, -4.767126042723606, 3.1340820126468216]){
+                        cylinder(h=4);
+                    };
                 };
             };
             translate(v=[10, 0, 0]){
@@ -46,7 +52,9 @@ linear_extrude(height=10, twist=120){
             };
             translate(v=[20, 0, 0]){
                 translate(v=[6, 4, 0]){
-                    cylinder(h=2);
+                    translate(v=[0.6085016237992458, 0.1995345709544849, 0.08586775879288466]){
+                        cylinder(h=4);
+                    };
                 };
             };
             translate(v=[30, 0, 0]){

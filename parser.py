@@ -5,6 +5,7 @@ from nltk.tree import Tree, ParentedTree
 from copy import deepcopy
 import openpyscad as ops
 import random
+import os
 
 def IsTerminal(tree):
     return type(tree) == str
@@ -72,14 +73,14 @@ def GenerateConcatenatedCadModel(tree:ParentedTree):
     return element
 
 def GenerateSphere():
-    return ops.Sphere(5).translate([(random.random()-0.5)*10, (random.random()-0.5)*10, (random.random()-0.5)*10])
+    return ops.Sphere(4).translate([(random.random()-0.5)*10, (random.random()-0.5)*10, (random.random()-0.5)*10])
 
 def GenerateCircleModel():
-    return ops.Cylinder(2)
-    # primitive = ops.Difference()
-    # primitive.append(ops.Circle(6))
-    # primitive.append(ops.Circle(5))
-    # return primitive
+    # return ops.Cylinder(4).translate([(random.random()-0.5)*10, (random.random()-0.5)*10, (random.random()-0.5)*10])
+    primitive = ops.Difference()
+    primitive.append(ops.Circle(6))
+    primitive.append(ops.Circle(5))
+    return primitive
 
 def GenerateSquareModel():
     primitive = ops.Difference()
@@ -137,7 +138,10 @@ def Process(str, file):
     else:
         print("************* " + str)
 
-Process('extrude [ mirror [ concat [ circle square circle square ] ] ]', 'output5.scad')
+# Process('extrude [ mirror [ concat [ circle square circle square ] ] ]', 'output5.scad')
 
-for i in range(1,50):
-    Process(GenerateRandomSample(pgrammar), './out/output' + str(i) + '.scad')
+# for i in range(1,50):
+#     Process(GenerateRandomSample(pgrammar), './out/output' + str(i) + '.scad')
+
+Process('hull [ extrude [ circle ] ]', 'output6.scad')
+os.system('openscad -o output6.png output6.scad')

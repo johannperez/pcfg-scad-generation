@@ -6,15 +6,17 @@ import random
 pgrammar = PCFG.fromstring("""
 S -> Pendant [1]
 Pendant -> Figure [1]
-Figure -> Primitive [.25] | Concatenated [.14] | Intersected [.05] | Overlapped [.14] | Mirror [.14] | Extrude [.14] | Hull [.14]
+Figure -> Primitive [.25] | Concatenated [.07] | Intersected [.05] | Overlapped [.14] | Mirror [.21] | Extrude [.18] | Hull [.1]
 Mirror -> 'mirror' '[' Figure ']' [1]
-Extrude -> 'extrude' '[' Figure ']' [1]
+Extrude -> 'extrude' '[' 2DPrimitive ']' [1]
 Hull -> 'hull' '[' Figure ']' [1]
 Concatenated -> 'concat' '[' FiguresArray ']' [1]
 Overlapped -> 'overlap' '[' FiguresArray ']' [1]
 Intersected -> 'intersect' '[' FiguresArray ']' [1]
-FiguresArray -> Figure [0.7] | Figure FiguresArray [0.3]
-Primitive -> 'square' [0.3333]| 'triangle' | 'circle' [0.3333] | 'sphere' [0.3333]
+FiguresArray -> Figure [0.6] | Figure FiguresArray [0.4]
+Primitive -> 3DPrimitive [0.5] | 2DPrimitive [0.5]
+3DPrimitive ->  'triangle'  | 'sphere' [1]
+2DPrimitive -> 'square' [0.5] | 'circle' [0.5]
 """)
 
 print(pgrammar)
@@ -47,6 +49,4 @@ def GenerateRandomSample(pgrammar):
     generate_sample(pgrammar, pgrammar.start(), frags)
     return ' '.join(frags)
 
-# print(GenerateRandomSample(pgrammar))
-# print(GenerateRandomSample(pgrammar))
-# print(GenerateRandomSample(pgrammar))
+print(GenerateRandomSample(pgrammar))
