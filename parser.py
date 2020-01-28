@@ -73,20 +73,33 @@ def GenerateConcatenatedCadModel(tree:ParentedTree):
     return element
 
 def GenerateSphere():
-    return ops.Sphere(4).translate([(random.random()-0.5)*10, (random.random()-0.5)*10, (random.random()-0.5)*10])
+    return ops.Sphere(4).translate(GetRandomPoint(3))
+
+def GeneratePolygonModel():
+    points_count = random.randint(3,8)
+    points = []
+    for i in range(0, points_count):
+        points.append(GetRandomPoint(2))
+    return ops.Polygon(points).translate(GetRandomPoint(3))
+
+def GetRandomPoint(dimensions):
+    point = []
+    for i in range(0, dimensions):
+        point.append(random.random()*20)
+    return point
 
 def GenerateCircleModel():
     # return ops.Cylinder(4).translate([(random.random()-0.5)*10, (random.random()-0.5)*10, (random.random()-0.5)*10])
     primitive = ops.Difference()
     primitive.append(ops.Circle(6))
     primitive.append(ops.Circle(5))
-    return primitive
+    return primitive.translate(GetRandomPoint(3))
 
 def GenerateSquareModel():
     primitive = ops.Difference()
     primitive.append(ops.Square(10))
     primitive.append(ops.Square(8).translate([1,1,0]))
-    return primitive
+    return primitive.translate(GetRandomPoint(3))
 
 def IsAnArray(tree:ParentedTree):
     return tree.label() == 'FiguresArray'
@@ -121,7 +134,9 @@ def GenerateCadFile(tree: ParentedTree):
         else:
             return GenerateCadFile(tree[0])
     elif tree == 'circle':
-        return GenerateCircleModel().translate([6,4,0])
+        return GenerateCircleModel()
+    elif tree == 'polygon':
+        return GeneratePolygonModel()
     elif tree == 'square':
         return GenerateSquareModel()
     elif tree == 'sphere':
@@ -138,10 +153,13 @@ def Process(str, file):
     else:
         print("************* " + str)
 
-# Process('extrude [ mirror [ concat [ circle square circle square ] ] ]', 'output5.scad')
+for i in range(1,50):
+    try:
+        g = GenerateRandomSample(pgrammar)
+        print(g)
+        print("---")
+        Process(g, './out/output' + str(i) + '.scad')
+        os.system('openscad -o png/output'+ str(i) + '.png out/output' + str(i) + '.scad')
+    except:
+        print('failed')
 
-# for i in range(1,50):
-#     Process(GenerateRandomSample(pgrammar), './out/output' + str(i) + '.scad')
-
-Process('hull [ extrude [ circle ] ]', 'output6.scad')
-os.system('openscad -o output6.png output6.scad')

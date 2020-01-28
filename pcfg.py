@@ -5,18 +5,22 @@ import random
 
 pgrammar = PCFG.fromstring("""
 S -> Pendant [1]
-Pendant -> Figure [1]
-Figure -> Primitive [.25] | Concatenated [.07] | Intersected [.05] | Overlapped [.14] | Mirror [.21] | Extrude [.18] | Hull [.1]
+Pendant -> Concatenated [.3] | Intersected [.1]  | Mirror [.4] | Hull [.2]
+Figure -> 3DFigure [.3] | Concatenated [.2] | Intersected [.1] | Mirror [.2] | Hull [.2]
 Mirror -> 'mirror' '[' Figure ']' [1]
-Extrude -> 'extrude' '[' 2DPrimitive ']' [1]
+Extrude -> 'extrude' '[' 2DFiguresArray ']' [1]
 Hull -> 'hull' '[' Figure ']' [1]
 Concatenated -> 'concat' '[' FiguresArray ']' [1]
-Overlapped -> 'overlap' '[' FiguresArray ']' [1]
+Overlapped -> 'overlap' '[' 2DFiguresArray ']' [1]
 Intersected -> 'intersect' '[' FiguresArray ']' [1]
-FiguresArray -> Figure [0.6] | Figure FiguresArray [0.4]
+FiguresArray -> Figure [0.4] | Figure FiguresArray [0.6]
+3DFigure -> 3DPrimitive [.5] | Extrude [.5]
+3DFiguresArray -> 3DFigure [.4] | 3DFigure 3DFiguresArray [.6]
+2DFiguresArray -> 2DFigure [0.4] | 2DFigure 2DFiguresArray [0.6]
+2DFigure -> Overlapped [.3] | 2DPrimitive [.7]
 Primitive -> 3DPrimitive [0.5] | 2DPrimitive [0.5]
-3DPrimitive ->  'triangle'  | 'sphere' [1]
-2DPrimitive -> 'square' [0.5] | 'circle' [0.5]
+3DPrimitive ->  'cube' [.5]  | 'sphere' [.5]
+2DPrimitive -> 'square' [0.3333] | 'circle' [0.3333] | 'polygon' [.3333]
 """)
 
 print(pgrammar)
