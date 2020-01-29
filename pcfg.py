@@ -1,7 +1,8 @@
-from nltk import PCFG
+from nltk import PCFG, Nonterminal
 from nltk.parse.generate import generate
 from nltk.text import Text
 import random
+from copy import deepcopy
 
 pgrammar = PCFG.fromstring("""
 S -> Pendant [1]
@@ -24,6 +25,24 @@ Primitive -> 3DPrimitive [0.5] | 2DPrimitive [0.5]
 """)
 
 print(pgrammar)
+
+# def RandomizedGrammar():
+#     new_grammar = deepcopy(pgrammar)
+
+#     pendant_productions = new_grammar.productions(lhs=Nonterminal("Pendant"))
+
+#     remaining_probability = 1
+
+#     for prod in pendant_productions:
+#         r = random.random()
+#         probability = remaining_probability * r
+#         remaining_probability = remaining_probability - probability
+        
+
+#     return new_grammar
+
+# RandomizedGrammar()
+
 
 def generate_sample(grammar, prod, frags):        
     if prod in grammar._lhs_index: # Derivation
@@ -53,4 +72,4 @@ def GenerateRandomSample(pgrammar):
     generate_sample(pgrammar, pgrammar.start(), frags)
     return ' '.join(frags)
 
-print(GenerateRandomSample(pgrammar))
+# print(GenerateRandomSample(pgrammar))

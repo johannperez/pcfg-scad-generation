@@ -153,13 +153,23 @@ def Process(str, file):
     else:
         print("************* " + str)
 
-for i in range(1,50):
+f = open("sampletext.txt", "w")
+
+for i in range(1,1000):
     try:
-        g = GenerateRandomSample(pgrammar)
-        print(g)
-        print("---")
-        Process(g, './out/output' + str(i) + '.scad')
-        os.system('openscad -o png/output'+ str(i) + '.png out/output' + str(i) + '.scad')
+        f.write(GenerateRandomSample(pgrammar))
+        f.write('\n')
     except:
         print('failed')
+
+f.close()
+
+    # try:
+    #     g = GenerateRandomSample(pgrammar)
+    #     print(g)
+    #     print("---")
+    #     Process(g, './out/output' + str(i) + '.scad')
+    #     os.system('openscad -o png/output'+ str(i) + '.png out/output' + str(i) + '.scad')
+    # except:
+    #     print('failed')
 
